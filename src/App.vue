@@ -1,28 +1,31 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="container">
+    <img alt="Cloud generator" src="./assets/logo.png">
+    <Generator :width="config.width" :height="config.height" :fuctuation="config.fluctuation" :allowHoles="config.allowHoles"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Generator from './components/Generator.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Generator
+  },
+  data: function() {
+    const defaultOpts = {width: 11, height: 5, fluctuation: 3, allowHoles: true};
+    const loadedOptsRaw = new URL(window.location.href).searchParams.get("config");
+    let loadedOpts = {};
+    try {
+      loadedOpts = JSON.parse(atob(loadedOptsRaw));
+    } catch (e) {
+      // Error
+    }
+
+    return {
+      config:  Object.assign({}, defaultOpts, loadedOpts)
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
