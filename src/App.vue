@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container">
     <img alt="Cloud generator" src="./assets/logo.png" />
-    <Generator :config="generatorConfig" />
+    <Generator v-if="generatorConfig" :config="generatorConfig" />
   </div>
 </template>
 

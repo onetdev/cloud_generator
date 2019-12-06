@@ -76,7 +76,7 @@ class RenderMapper {
     const d = this.dotDiameter;
     let result = 'C ';
     result += `${(aX + 0.5) * d} ${(aY + 0.5) * d}, `; // Handle A
-    result += `${(bX + 0.5) * d}, ${(bY + 0.5) * d}, `; // Handle B
+    result += `${(bX + 0.5) * d} ${(bY + 0.5) * d}, `; // Handle B
     result += `${(exitX + 0.5) * d} ${(exitY + 0.5) * d}`; // Exit point
     return result;
   }
@@ -171,6 +171,7 @@ export default class CloudGenerator {
       const line = this.getLineBoundaries(i);
       const space = Math.abs(line.right.x - line.left.x);
 
+      (console as any).log(space, this.config.holeTreshold);
       if (space < this.config.holeTreshold) {
         continue;
       }
