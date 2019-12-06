@@ -5,7 +5,7 @@
       <Configurator :config="config" v-on:update:config="onUpdateConfig($event)" />
     </b-container>
     <footer class="container" id="footer">
-      <b-nav pills small>
+      <b-nav pills small align="center">
         <b-nav-item disabled>Copyright &copy; 2020</b-nav-item>
         <b-nav-item href="https://onetdev.com">József Koller</b-nav-item>
         <b-nav-item href="https://github.com/orosznyet">GitHub</b-nav-item>
