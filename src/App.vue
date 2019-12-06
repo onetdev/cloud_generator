@@ -1,21 +1,31 @@
 <template>
   <div id="app" class="container">
-    <img alt="Cloud generator" src="./assets/logo.png">
-    <Generator :width="config.width" :height="config.height" :fuctuation="config.fluctuation" :allowHoles="config.allowHoles"/>
+    <img alt="Cloud generator" src="./assets/logo.png" />
+    <Generator :config="generatorConfig" />
   </div>
 </template>
 
-<script>
-import Generator from './components/Generator.vue'
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import { CloudGeneratorConfig } from "./services/CloudGenerator";
+import Generator from "./components/Generator.vue";
 
-export default {
-  name: 'app',
-  components: {
-    Generator
-  },
-  data: function() {
-    const defaultOpts = {width: 11, height: 5, fluctuation: 3, allowHoles: true};
-    const loadedOptsRaw = new URL(window.location.href).searchParams.get("config");
+@Component({
+  components: { Generator }
+})
+class App extends Vue {
+  generatorConfig: CloudGeneratorConfig = {
+    width: 11,
+    height: 5,
+    fluctuation: 3,
+    renderRadius: 10,
+    holeTreshold: 2
+  };
+
+  mounted() {
+    const url = new URL(window.location.href);
+    const loadedOptsRaw: string = url.searchParams.get("config") || "";
+
     let loadedOpts = {};
     try {
       loadedOpts = JSON.parse(atob(loadedOptsRaw));
@@ -23,9 +33,9 @@ export default {
       // Error
     }
 
-    return {
-      config:  Object.assign({}, defaultOpts, loadedOpts)
-    }
+    this.generatorConfig = Object.assign({}, this.generatorConfig, loadedOpts);
   }
 }
+
+export default App;
 </script>
