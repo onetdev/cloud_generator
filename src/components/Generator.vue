@@ -30,7 +30,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import CloudGenerator, { CloudGeneratorConfig } from "../services/CloudGenerator";
 
 @Component
-export default class Generator extends Vue {
+class Generator extends Vue {
   @Prop() private config!: CloudGeneratorConfig;
   private svgPath!: string;
 
@@ -42,6 +42,8 @@ export default class Generator extends Vue {
     this.svgPath = generator.render()
   }
 }
+
+export default Generator;
 </script>
 
 <style scoped></style>
