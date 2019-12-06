@@ -159,6 +159,9 @@ export default class CloudGenerator {
    */
   generateCutouts(): void {
     const holes: Hole[] = [];
+
+    if (this.config.holeTreshold < 1) { return; }
+
     // Go through each lines except top and bottom lines.
     // Skipping line if previous line has hole already
     for (let i = 1; i < this.config.height - 1; i++) {
