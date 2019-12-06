@@ -7,20 +7,23 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { CloudGeneratorConfig } from "./services/CloudGenerator";
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faSync, faDice } from '@fortawesome/free-solid-svg-icons';
+import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import CloudPresets, { CloudPreset } from "./vars/CloudPresets";
 import Generator from "./components/Generator.vue";
+
+library.add(faQuestionCircle);
+library.add(faSync);
+library.add(faDice);
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 @Component({
   components: { Generator }
 })
 class App extends Vue {
-  generatorConfig: CloudGeneratorConfig = {
-    width: 11,
-    height: 5,
-    fluctuation: 3,
-    renderRadius: 10,
-    holeTreshold: 2
-  };
+  generatorConfig: CloudPreset = CloudPresets.regular;
 
   mounted() {
     const url = new URL(window.location.href);

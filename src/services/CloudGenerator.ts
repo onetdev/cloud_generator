@@ -171,7 +171,6 @@ export default class CloudGenerator {
       const line = this.getLineBoundaries(i);
       const space = Math.abs(line.right.x - line.left.x);
 
-      (console as any).log(space, this.config.holeTreshold);
       if (space < this.config.holeTreshold) {
         continue;
       }
