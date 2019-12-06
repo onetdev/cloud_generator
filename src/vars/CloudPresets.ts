@@ -10,14 +10,14 @@ export default class CloudPresets {
     height: 5,
     fluctuation: 3,
     renderRadius: 10,
-    holeTreshold: 2,
+    holeTreshold: 0,
     color: "#48c7ff"
   }
 
   static foggy: CloudPreset = {
-    width: 11,
+    width: 17,
     height: 5,
-    fluctuation: 5,
+    fluctuation: 7,
     renderRadius: 10,
     holeTreshold: 2,
     color: "#dadada"
