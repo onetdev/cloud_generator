@@ -2,7 +2,7 @@
   <div class="container">
     <div class="controllers" v-if="config">
       Height: {{ config.height }} Width: {{ config.width }} Fluctuation:
-      {{ config.fluctuation }} Allow holes: {{ config.allowHoles }}
+      {{ config.fluctuation }} Allow holes: {{ config.holeTreshold }}
     </div>
     <div class="image">
       <svg

@@ -1,13 +1,5 @@
 import _ from 'lodash';
 
-export interface CloudGeneratorConfig {
-  width: number;
-  height: number;
-  fluctuation: number;
-  renderRadius: number;
-  holeTreshold: number;
-}
-
 interface Coordinate {
   x: number;
   y: number;
@@ -24,15 +16,25 @@ interface Line {
   right: Coordinate;
 }
 
+export interface CloudGeneratorConfig {
+  width: number;
+  height: number;
+  fluctuation: number;
+  renderRadius: number;
+  holeTreshold: number;
+}
+
 /**
  * Class that reponsible for mapping the cloud points to a actual render grid.
  */
 class RenderMapper {
-  private dotDiameter: number;
-  private totalWidth: number;
-  private totalHeight: number;
+  config: CloudGeneratorConfig;
+  dotDiameter: number;
+  totalWidth: number;
+  totalHeight: number;
 
-  constructor(private config: CloudGeneratorConfig) {
+  constructor(config: CloudGeneratorConfig) {
+    this.config = config;
     this.dotDiameter = 2 * this.config.renderRadius;
     this.totalWidth = this.config.width * this.dotDiameter;
     this.totalHeight = this.config.height * this.dotDiameter;
@@ -99,11 +101,11 @@ class RenderMapper {
 }
 
 export default class CloudGenerator {
-  private config: CloudGeneratorConfig;
-  private renderer: RenderMapper;
-  private center: number;
-  private holes: Hole[] = [];
-  private points: Coordinate[] = [];
+  config: CloudGeneratorConfig;
+  renderer: RenderMapper;
+  center: number;
+  holes: Hole[] = [];
+  points: Coordinate[] = [];
 
   constructor(config: CloudGeneratorConfig) {
     // Assertion
@@ -156,10 +158,11 @@ export default class CloudGenerator {
    * Holes will be at least one row away from eachother.
    */
   generateCutouts(): void {
+    const holes: Hole[] = [];
     // Go through each lines except top and bottom lines.
     // Skipping line if previous line has hole already
     for (let i = 1; i < this.config.height - 1; i++) {
-      if (this.holes[i - 1]) {
+      if (holes[i - 1]) {
         continue;
       }
 
@@ -187,10 +190,12 @@ export default class CloudGenerator {
           continue;
         }
 
-        this.holes[y] = { x1: xLeft, x2: xRight, y };
+        holes[y] = { x1: xLeft, x2: xRight, y };
         break;
       }
     }
+
+    this.holes = holes.filter(hole => hole); // Reindex
   }
 
   /**
