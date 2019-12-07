@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <b-container v-if="preset != null">
-      <Preview :config="preset" :color="color" />
+      <Preview :config="config" :color="color" />
       <Configurator
         :init-preset="preset"
         v-on:update:config="onUpdateConfig($event)"
@@ -30,10 +30,11 @@ import Preview from "./components/Preview.vue";
 })
 class App extends Vue {
   preset: CloudPreset = CloudPresets.regular;
+  config: CloudGeneratorConfig = this.preset;
   color: string = this.preset.color;
 
-  onUpdateConfig($event: any) {
-    this.preset = $event;
+  onUpdateConfig($event: CloudGeneratorConfig) {
+    this.config = $event;
   }
 
   onUpdateColor($event: string) {
