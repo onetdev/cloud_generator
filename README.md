@@ -23,7 +23,6 @@ console.log(generator.generate().export());
 ## Known issues to be fixed and missing features to be added
 
 - Header, explanation footer and share options should be added.
-- Download is not working as of yet.
 - Past generations queue (to be able to restore dismissed items).
 - Composition showcase.
 - Add slow up-down motion to clouds.
