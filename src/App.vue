@@ -20,8 +20,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faSync, faDice, faCloudDownloadAlt } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { CloudGeneratorConfig } from './services/CloudGenerator';
-import CloudPresets, { CloudPreset } from "./vars/CloudPresets";
+import { CloudGeneratorConfig } from './generator/CloudGenerator';
+import CloudPresets, { CloudPreset } from "./generator/CloudPresets";
 import Configurator from "./components/Configurator.vue";
 import Preview from "./components/Preview.vue";
 

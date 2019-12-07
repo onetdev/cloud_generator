@@ -1,9 +1,12 @@
-import { CloudGeneratorConfig } from '../services/CloudGenerator';
+import { CloudGeneratorConfig } from './CloudGenerator';
 
 export interface CloudPreset extends CloudGeneratorConfig {
   color: string;
 }
 
+/**
+ * Preconfigured profiles to fit a certain visual fidelity.
+ */
 export default class CloudPresets {
   static regular: CloudPreset = {
     width: 11,

@@ -117,10 +117,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
-import CloudPresets, { CloudPreset } from "../vars/CloudPresets";
 import Events from "../vars/Events";
-import CloudGenerator from "../services/CloudGenerator";
+import { Component, Prop, Watch, Vue } from "vue-property-decorator";
+import CloudPresets, { CloudPreset } from "../generator/CloudPresets";
+import CloudGenerator from "../generator/CloudGenerator";
 
 @Component({
   components: {}

@@ -29,8 +29,8 @@
 <script lang="ts">
 import _ from "lodash";
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { CloudPreset } from "../vars/CloudPresets";
-import CloudGenerator from "../services/CloudGenerator";
+import { CloudPreset } from "../generator/CloudPresets";
+import CloudGenerator, { BoundingBox, RenderMapper } from "../generator/CloudGenerator";
 
 interface Coordinate {
   x: number;
@@ -42,8 +42,7 @@ class Preview extends Vue {
   @Prop() config!: CloudPreset;
   localConfig: CloudPreset = this.config;
   svgPath: string = "";
-  svgPathMin: Coordinate = { x: Infinity, y: Infinity };
-  svgPathMax: Coordinate = { x: -Infinity, y: -Infinity };
+  boundingBox?: BoundingBox;
 
   /**
    * Since we don't have path loader we just generate a new cloud
@@ -59,31 +58,10 @@ class Preview extends Vue {
    */
   generate(): void {
     const generator = new CloudGenerator(this.localConfig);
-    generator.generatePoints();
-    generator.generateCutouts();
+    generator.generate();
 
-    this.svgPath = generator.render();
-    this.updateBoundingCoordinates();
-  }
-
-  /**
-   * This will always generate the proper bounding box for the
-   * svg on screen because it will look at each single coordinate in the path.
-   */
-  updateBoundingCoordinates(): void {
-    const ex = RegExp("([-0-9]+) ([-0-9]+)", "ig");
-    let match;
-    while ((match = ex.exec(this.svgPath)) !== null) {
-      this.svgPathMin = {
-        x: Math.min(this.svgPathMin.x, parseInt(match[1])),
-        y: Math.min(this.svgPathMin.y, parseInt(match[2]))
-      };
-
-      this.svgPathMax = {
-        x: Math.max(this.svgPathMax.x, parseInt(match[1])),
-        y: Math.max(this.svgPathMax.y, parseInt(match[2]))
-      };
-    }
+    this.svgPath = generator.export();
+    this.boundingBox = RenderMapper.getBoundingCoordinates(this.svgPath);
   }
 
   /**

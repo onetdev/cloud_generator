@@ -1,21 +1,5 @@
 import _ from 'lodash';
 
-interface Coordinate {
-  x: number;
-  y: number;
-}
-
-interface Hole {
-  x1: number;
-  x2: number;
-  y: number;
-}
-
-interface Line {
-  left: Coordinate;
-  right: Coordinate;
-}
-
 export interface CloudGeneratorConfig {
   width: number;
   height: number;
@@ -24,10 +8,20 @@ export interface CloudGeneratorConfig {
   holeTreshold: number;
 }
 
+export interface Coordinate { x: number; y: number; }
+export interface BoundingBox { a: Coordinate; b: Coordinate; }
+export interface Line { left: Coordinate; right: Coordinate; }
+
+export interface Hole {
+  x1: number;
+  x2: number;
+  y: number;
+}
+
 /**
  * Class that reponsible for mapping the cloud points to a actual render grid.
  */
-class RenderMapper {
+export class RenderMapper {
   config: CloudGeneratorConfig;
   dotDiameter: number;
   totalWidth: number;
@@ -98,14 +92,39 @@ class RenderMapper {
     result += `Q ${(x - 0.5) * d} ${(y - 0.5) * d} ${x * d} ${(y - 0.5) * d} `; // Top left
     return result + "Z";
   }
+
+  /**
+   * This will always generate the proper bounding box for the
+   * svg on screen because it will look at each single coordinate in the path.
+   */
+  static getBoundingCoordinates(path: string): BoundingBox {
+    let min: Coordinate = { x: Infinity, y: Infinity };
+    let max: Coordinate = { x: -Infinity, y: -Infinity };
+
+    const ex = RegExp("([-0-9]+) ([-0-9]+)", "ig");
+    let match;
+    while ((match = ex.exec(path)) !== null) {
+      min = {
+        x: Math.min(min.x, parseInt(match[1])),
+        y: Math.min(min.y, parseInt(match[2]))
+      };
+
+      max = {
+        x: Math.max(max.x, parseInt(match[1])),
+        y: Math.max(max.y, parseInt(match[2]))
+      };
+    }
+
+    return { a: min, b: max };
+  }
 }
 
 export default class CloudGenerator {
   config: CloudGeneratorConfig;
-  renderer: RenderMapper;
+  mapper: RenderMapper;
   center: number;
+  outlinePoints: Coordinate[] = [];
   holes: Hole[] = [];
-  points: Coordinate[] = [];
 
   constructor(config: CloudGeneratorConfig) {
     // Assertion
@@ -118,14 +137,16 @@ export default class CloudGenerator {
 
     this.config = config;
     this.center = Math.ceil(this.config.width / 2);
-    this.renderer = new RenderMapper(this.config);
+    this.mapper = new RenderMapper(this.config);
   }
 
   /**
    * Generate points for the left and right side while balance distance
-   * between sides.
+   * between sides. Overwrites the points property of the instance.
    */
-  generatePoints() {
+  generateOutlinePoints(): this {
+    this.outlinePoints = [];
+
     // Left side (from top to bottom)
     for (let i = 0; i < this.config.height; i++) {
       const point = {
@@ -133,7 +154,7 @@ export default class CloudGenerator {
         y: i
       };
 
-      this.points.push(point);
+      this.outlinePoints.push(point);
     }
 
     // Right side (from bottom to top)
@@ -144,23 +165,28 @@ export default class CloudGenerator {
           Math.round(Math.random() * this.config.fluctuation) * (i % 2 ? 1 : -1),
         y: i
       };
-      const left = this.points.find(item => item.y == point.y);
+      const left = this.outlinePoints.find(item => item.y == point.y);
       if (!left) { continue; }
       point.x = Math.max(left.x + 2, point.x);
 
-      this.points.push(point);
+      this.outlinePoints.push(point);
     }
+
+    return this;
   }
 
   /**
    * Finds complete solid parts of the matrix and puts holes into it based on the
-   * hole treshold value.
-   * Holes will be at least one row away from eachother.
+   * hole treshold value. Holes will be at least one row away from eachother.
+   * With 0 treshold, this function will do nothing.
    */
-  generateCutouts(): void {
+  generateHoles(): this {
     const holes: Hole[] = [];
 
-    if (this.config.holeTreshold < 1) { return; }
+    if (this.config.holeTreshold < 1) { return this; }
+    if (!this.outlinePoints.length) {
+      throw new Error(`No points found, generate or add points manually before executing hole generator.`);
+    }
 
     // Go through each lines except top and bottom lines.
     // Skipping line if previous line has hole already
@@ -179,7 +205,7 @@ export default class CloudGenerator {
       }
 
       let trialSlots = Array.from(Array(space - this.config.holeTreshold).keys());
-      trialSlots =  _.shuffle(trialSlots);
+      trialSlots = _.shuffle(trialSlots);
 
       for (let slot of trialSlots) {
         const y = line.left.y;
@@ -198,7 +224,16 @@ export default class CloudGenerator {
       }
     }
 
-    this.holes = holes.filter(hole => hole); // Reindex
+    this.holes = holes.filter(hole => hole); // Reindexing
+
+    return this;
+  }
+
+  /**
+   * Generate everything in one go.
+   */
+  generate(): this {
+    return this.generateOutlinePoints().generateHoles();
   }
 
   /**
@@ -207,7 +242,7 @@ export default class CloudGenerator {
    * @returns {Line}
    */
   getLineBoundaries(y: number): Line {
-    const result = this.points.filter(point => point.y == y);
+    const result = this.outlinePoints.filter(point => point.y == y);
     return { left: result[0], right: result[1] };
   }
 
@@ -215,13 +250,13 @@ export default class CloudGenerator {
    * Generates the outline path for the cloud
    * @return {array}
    */
-  getShapePath(): string[] {
+  getOutlinePath(): string[] {
     let path = [];
-    path.push(this.renderer.pathPenDown(this.center, -0.5));
+    path.push(this.mapper.pathPenDown(this.center, -0.5));
 
-    for (let i = 0; i < this.points.length; i++) {
-      const current = this.points[i];
-      const next = this.points[i + 1];
+    for (let i = 0; i < this.outlinePoints.length; i++) {
+      const current = this.outlinePoints[i];
+      const next = this.outlinePoints[i + 1];
 
       const hasNext = !!next;
       // const isTop = i == 0 || (i + 1 == this.height);
@@ -233,7 +268,7 @@ export default class CloudGenerator {
       const entry = { x: current.x, y: current.y + (isOnLeft ? -0.5 : 0.5) };
       const exit = { x: current.x, y: current.y + (isOnLeft ? 0.5 : -0.5) };
 
-      path.push(this.renderer.pathLineTo(entry.x, entry.y));
+      path.push(this.mapper.pathLineTo(entry.x, entry.y));
 
       // Concave and Convex elements
       let handleA, handleB;
@@ -260,7 +295,7 @@ export default class CloudGenerator {
       // Curvy clouds
       if (handleA && handleB) {
         path.push(
-          this.renderer.pathCurve(
+          this.mapper.pathCurve(
             handleA.x,
             handleA.y,
             handleB.x,
@@ -278,20 +313,19 @@ export default class CloudGenerator {
 
   /**
    * Finds complete solid parts of the matrix and puts holes into it based on the
-   * hole treshold value.
-   * Holes will be at least one row away from eachother.
+   * hole treshold value. Holes will be at least one row away from eachother.
    */
-  getCutoutsPaths(): string[] {
+  getHolePaths(): string[] {
     let path = [];
 
     for (let hole of this.holes) {
       if (this.config.holeTreshold == 1) {
-        path.push(this.renderer.pathCircle(hole.x1, hole.y));
+        path.push(this.mapper.pathCircle(hole.x1, hole.y));
       } else {
-        path.push(this.renderer.pathPenDown(hole.x1, hole.y - 0.5));
-        path.push(this.renderer.pathLineTo(hole.x2, hole.y - 0.5));
+        path.push(this.mapper.pathPenDown(hole.x1, hole.y - 0.5));
+        path.push(this.mapper.pathLineTo(hole.x2, hole.y - 0.5));
         path.push(
-          this.renderer.pathCurve(
+          this.mapper.pathCurve(
             hole.x2 + 0.75,
             hole.y - 0.5,
             hole.x2 + 0.75,
@@ -300,9 +334,9 @@ export default class CloudGenerator {
             hole.y + 0.5
           )
         );
-        path.push(this.renderer.pathLineTo(hole.x1, hole.y + 0.5));
+        path.push(this.mapper.pathLineTo(hole.x1, hole.y + 0.5));
         path.push(
-          this.renderer.pathCurve(
+          this.mapper.pathCurve(
             hole.x1 - 0.75,
             hole.y + 0.5,
             hole.x1 - 0.75,
@@ -319,11 +353,12 @@ export default class CloudGenerator {
   }
 
   /**
-   * Putting together parts of the cloud parts
+   * Putting together parts of the cloud parts and export a single SVG path
+   * command string
    */
-  render() {
-    return this.getShapePath()
-      .concat(this.getCutoutsPaths())
+  export(): string {
+    return this.getOutlinePath()
+      .concat(this.getHolePaths())
       .join(" \n");
   }
 
