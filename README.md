@@ -1,5 +1,5 @@
 # Cloud Generator
-Stylised flat cloud/fog/ shape SVG generator with various configuration options. This repository contains all the UI stuff (Vue.js in TypeScript) and Vue-Bootrstrap based components.
+Stylised flat cloud/fog/mist shape SVG generator with various configuration options. This repository contains all the UI stuff (Vue.js in TypeScript) and Vue-Bootrstrap based components.
 
 If your are only looking for the actual generator, check out the `src/generator/CloudGenerator.ts` file. Don't worry if you are not ready for TypeScript, you can transpile your own using the [Playground](http://www.typescriptlang.org/play/)).
 
@@ -22,7 +22,6 @@ console.log(generator.generate().export());
 
 ## Known issues to be fixed and missing features to be added
 
-- The generator should not create new iteration by changing the color but only when chaning generator settings.
 - Header, explanation footer and share options should be added.
 - Download is not working as of yet.
 - Past generations queue (to be able to restore dismissed items).
