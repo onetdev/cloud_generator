@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <b-container v-if="preset != null">
+    <div id="background"></div>
+    <b-container v-if="preset != null" id="main">
       <Preview :config="config" :color="color" />
       <Configurator
         :init-preset="preset"
@@ -46,12 +47,27 @@ export default App;
 </script>
 
 <style scoped>
+#background {
+  border-radius: 50%;
+    position: absolute;
+    width: 200vw;
+    height: 200vh;
+    top: -110vh;
+    left: -50vw;
+    box-shadow: 0px 15px 50px #d8d8d8;
+    z-index: 1;
+}
 #app {
   min-height: 100vh;
   min-width: 100vw;
 }
+#main {
+  z-index: 2;
+  position: relative;
+}
 #footer {
   padding-top: 4em;
   padding-bottom: 2em;
+  z-index: 1;
 }
 </style>

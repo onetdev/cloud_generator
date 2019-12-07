@@ -8,7 +8,7 @@
         </b-dropdown>
       </b-col>
     </b-row>
-    <b-row id="configurator" class="pt-2 pb-3 ml-1 mr-1">
+    <b-row id="configurator" class="pt-4 pb-3 ml-1 mr-1">
       <!-- Height -->
       <b-col sm="6" md="4">
         <label for="config-height">
