@@ -4,12 +4,12 @@
       <svg
         width="400"
         height="400"
-        viewBox="0 0 800 400"
+        :viewBox="`0 0 ${boundingWidth} ${boundingHeight}`"
         xmlns="http://www.w3.org/2000/svg"
         class="mx-auto"
         id="image"
       >
-        <g transform="translate(200, 100)">
+        <g :transform="`translate(${boundingBox.a.x * -1}, 0)`">
           <path id="path" :d="svgPath" :fill="color" stroke="none" stroke-width="0" />
         </g>
       </svg>
