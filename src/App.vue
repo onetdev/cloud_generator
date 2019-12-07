@@ -9,6 +9,30 @@
         v-on:update:color="onUpdateColor($event)"
       />
     </b-container>
+    <b-container class="pt-5">
+      <b-row>
+        <b-col lg="5" offset-lg="1">
+          <h3>
+            Get your own cloud
+            <small class="text-muted">for free</small>
+          </h3>
+          <p class="lead">
+            Generate your own svg cloud and use it anywhere you want for absolutely free.
+            If you have any question of further request, mail me at
+            <a href="mailto:contact@onetdev.com">contact@onetdev.com</a>.
+          </p>
+        </b-col>
+        <b-col lg="5">
+          <h3>
+            Are you a developer?
+          </h3>
+          <p class="lead">
+            Would love to get your hands on the source code our maybe you want to contribute,
+            <a href="https://github.com/orosznyet/cloud_generator">just click here</a>.
+          </p>
+        </b-col>
+      </b-row>
+    </b-container>
     <footer class="container" id="footer">
       <b-nav pills small align="center">
         <b-nav-item disabled>Copyright &copy; 2020</b-nav-item>
@@ -49,13 +73,13 @@ export default App;
 <style scoped>
 #background {
   border-radius: 50%;
-    position: absolute;
-    width: 200vw;
-    height: 200vh;
-    top: -110vh;
-    left: -50vw;
-    box-shadow: 0px 15px 50px #d8d8d8;
-    z-index: 1;
+  position: absolute;
+  width: 200vw;
+  height: 200vh;
+  top: -110vh;
+  left: -50vw;
+  box-shadow: 0px 15px 50px #d8d8d8;
+  z-index: 1;
 }
 #app {
   min-height: 100vh;

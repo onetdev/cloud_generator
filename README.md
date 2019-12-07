@@ -20,13 +20,10 @@ const generator = new CloudGenerator(config);
 console.log(generator.generate().export());
 ```
 
-## Known issues to be fixed and missing features to be added
+## Todo
 
-- Header, explanation footer and share options should be added.
-- Past generations queue (to be able to restore dismissed items).
-- Composition showcase.
-- Add slow up-down motion to clouds.
-- Add tests.
+- Composition showcase, cloud animations to make it feel alive. (maybe)
+- Add shape support for cloud treshold. (maybe)
 
 ## Project setup
 
