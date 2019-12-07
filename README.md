@@ -5,6 +5,10 @@ If your are only looking for the actual generator, check out the `src/generator/
 
 [Live demo](https://onetdev.com/projects/cloud_generator)
 
+## How it looks
+
+![Screenshot](https://raw.githubusercontent.com/orosznyet/cloud_generator/master/src/assets/screenshot.png)
+
 ## Example usage of generator
 
 ```typescript
