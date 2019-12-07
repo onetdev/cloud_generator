@@ -8,7 +8,16 @@ If your are only looking for the actual generator, check out the `src/generator/
 ## Example usage of generator
 
 ```typescript
-
+import CloudGenerator from "CloudGenerator";
+const config: CloudGeneratorConfig = {
+  width: 11,
+  height: 5,
+  fluctuation: 3,
+  renderRadius: 10,
+  holeTreshold: 0
+};
+const generator = new CloudGenerator(config);
+console.log(generator.generate().export());
 ```
 
 ## Known issues to be fixed and missing features to be added

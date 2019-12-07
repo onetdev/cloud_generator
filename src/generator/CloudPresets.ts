@@ -1,4 +1,4 @@
-import { CloudGeneratorConfig } from './CloudGenerator';
+import { CloudGeneratorConfig } from "./CloudGenerator";
 
 export interface CloudPreset extends CloudGeneratorConfig {
   color: string;
