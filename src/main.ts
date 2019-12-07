@@ -5,7 +5,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faSync,
   faDice,
-  faCloudDownloadAlt
+  faCloudDownloadAlt,
+  faHistory
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -18,6 +19,7 @@ library.add(faQuestionCircle);
 library.add(faSync);
 library.add(faDice);
 library.add(faCloudDownloadAlt);
+library.add(faHistory);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 new Vue({

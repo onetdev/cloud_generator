@@ -14,11 +14,34 @@
         </g>
       </svg>
       <div class="actions">
-        <b-button id="download" variant="info" class="mr-2 mb-2" @click="download">
+        <b-button
+          v-if="history.length > 0"
+          id="history"
+          variant="warning"
+          class="mr-2 mb-2 px-4"
+          @click="historyBack"
+          tooltip="Revert last generation"
+        >
+          <font-awesome-icon icon="history" />
+        </b-button>
+
+        <b-button
+          id="download"
+          variant="info"
+          class="mr-2 mb-2 px-4"
+          @click="download"
+          title="Download"
+        >
           <font-awesome-icon icon="cloud-download-alt" />
         </b-button>
 
-        <b-button id="generate" variant="danger" class="mr-2 mb-2" @click="generate">
+        <b-button
+          id="generate"
+          variant="danger"
+          class="mr-2 mb-2 px-4"
+          @click="generate"
+          title="Generate new"
+        >
           <font-awesome-icon icon="dice" />
         </b-button>
       </div>
@@ -45,6 +68,7 @@ class Preview extends Vue {
   @Prop() config!: CloudPreset;
   @Prop() color!: string;
   svgPath: string = "";
+  history: string[] = [];
   boundingBox?: BoundingBox;
   boundingWidth?: number;
   boundingHeight?: number;
@@ -57,15 +81,18 @@ class Preview extends Vue {
     this.generate();
   }
 
-  /**
-   * If needed, the component will automaticaly generate a random cloud on
-   * mount.
-   */
   generate(): void {
     const generator = new CloudGenerator(this.config);
     generator.generate();
+    this.setSvgPath(generator.export());
+  }
 
-    this.svgPath = generator.export();
+  setSvgPath(path: string, skipHistory: boolean = false) {
+    if (this.svgPath && !skipHistory) {
+      this.history.push(this.svgPath);
+    }
+
+    this.svgPath = path;
     this.boundingBox = RenderMapper.getBoundingCoordinates(this.svgPath);
     this.boundingWidth = this.boundingBox.b.x - this.boundingBox.a.x;
     this.boundingHeight = this.boundingBox.b.y - this.boundingBox.a.y;
@@ -76,6 +103,11 @@ class Preview extends Vue {
     this.generate();
   }
 
+  historyBack() {
+    if (!this.history.length) return;
+    this.setSvgPath(this.history.pop()!, true);
+  }
+
   /**
    * Now, we will build our SVG file in memory, clean up the whitespaces, new lines
    * and tabs then start the download on the clients side.
@@ -83,7 +115,11 @@ class Preview extends Vue {
   download() {
     if (!this.boundingBox) return;
 
-    (console as any).log(this.boundingBox, this.boundingWidth, this.boundingHeight);
+    (console as any).log(
+      this.boundingBox,
+      this.boundingWidth,
+      this.boundingHeight
+    );
 
     const content = `<?xml version="1.0" encoding="utf-8"?>
       <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -100,7 +136,7 @@ class Preview extends Vue {
           stroke="none"
           stroke-width="0"
           />
-      </svg>`.replace(/[\s]+/gi, ' ');
+      </svg>`.replace(/[\s]+/gi, " ");
 
     const blob = new Blob([content], { type: "image/svg+xml;charset:utf-8" });
     this.downloadHack(blob, "cloud_onetdev_com.svg");
@@ -111,7 +147,7 @@ class Preview extends Vue {
     const a = document.createElement("a");
     document.body.appendChild(a);
     a.href = url;
-    a.download = filename || 'unknown_file';
+    a.download = filename || "unknown_file";
     a.click();
     window.URL.revokeObjectURL(url);
   }
@@ -128,8 +164,6 @@ export default Preview;
   border-radius: 10px;
   box-shadow: 5px 5px 10px rgba(223, 223, 223, 0.58);
   max-width: 600px;
-}
-#image {
 }
 .actions {
   position: absolute;
