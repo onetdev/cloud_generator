@@ -143,7 +143,7 @@ class Configurator extends Vue {
     this.color = preset.color;
   }
 
-  @Watch("config", { immediate: true, deep: true })
+  @Watch("config", { immediate: false, deep: true })
   onUpdateConfig(val: CloudPreset, oldVal: CloudPreset) {
     // Range input returns strings instead of number so here we go.
     val.holeTreshold = parseInt(val.holeTreshold.toString());
@@ -155,7 +155,7 @@ class Configurator extends Vue {
     this.emitUpdateConfig();
   }
 
-  @Watch("color", { immediate: true })
+  @Watch("color", { immediate: false })
   onUpdateLocalColor(val: string, oldVal: string) {
     this.emitUpdateColor();
   }
