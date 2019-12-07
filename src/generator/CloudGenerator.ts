@@ -357,6 +357,10 @@ export default class CloudGenerator {
    * command string
    */
   export(): string {
+    if (this.outlinePoints.length != this.config.height * 2) {
+      throw new Error('You must first generate outline points.');
+    }
+
     return this.getOutlinePath()
       .concat(this.getHolePaths())
       .join(" \n");

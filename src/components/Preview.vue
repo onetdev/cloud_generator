@@ -10,7 +10,7 @@
         id="image"
       >
         <g transform="translate(200, 100)">
-          <path :d="svgPath" :fill="localConfig.color" stroke="none" stroke-width="0" />
+          <path id="path" :d="svgPath" :fill="color" stroke="none" stroke-width="0" />
         </g>
       </svg>
       <div class="actions">
@@ -30,7 +30,10 @@
 import _ from "lodash";
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { CloudPreset } from "../generator/CloudPresets";
-import CloudGenerator, { BoundingBox, RenderMapper } from "../generator/CloudGenerator";
+import CloudGenerator, {
+  BoundingBox,
+  RenderMapper
+} from "../generator/CloudGenerator";
 
 interface Coordinate {
   x: number;
@@ -40,7 +43,7 @@ interface Coordinate {
 @Component({})
 class Preview extends Vue {
   @Prop() config!: CloudPreset;
-  localConfig: CloudPreset = this.config;
+  @Prop() color!: string;
   svgPath: string = "";
   boundingBox?: BoundingBox;
 
@@ -57,28 +60,16 @@ class Preview extends Vue {
    * mount.
    */
   generate(): void {
-    const generator = new CloudGenerator(this.localConfig);
+    const generator = new CloudGenerator(this.config);
     generator.generate();
 
     this.svgPath = generator.export();
     this.boundingBox = RenderMapper.getBoundingCoordinates(this.svgPath);
   }
 
-  /**
-   * We should only redraw if we got the same config (means rerandom) or there was a change
-   * other than to the color.
-   */
   @Watch("config", { immediate: true, deep: true })
   onConfigUpdated(val: CloudPreset, oldVal: CloudPreset) {
-    const hasColorChanged = oldVal ? val.color != oldVal.color : true;
-    const hasSeedsChanged = oldVal
-      ? _.isEqual(_.omit(val, "color"), _.omit(oldVal, "color"))
-      : true;
-    this.localConfig = this.config;
-
-    if (hasSeedsChanged || !hasColorChanged) {
       this.generate();
-    }
   }
 
   /**
@@ -108,8 +99,9 @@ export default Preview;
   right: 0;
   bottom: 0;
 }
-#download, #generate {
-  opacity: .8;
+#download,
+#generate {
+  opacity: 0.8;
   transition: ease 200ms opacity;
   &:hover {
     opacity: 0.8;

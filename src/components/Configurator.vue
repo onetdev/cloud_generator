@@ -16,7 +16,7 @@
         </label>
         <b-form-input
           id="config-height"
-          v-model="localConfig.height"
+          v-model="config.height"
           type="range"
           min="1"
           max="11"
@@ -40,7 +40,7 @@
         </label>
         <b-form-input
           id="config-width"
-          v-model="localConfig.width"
+          v-model="config.width"
           type="range"
           min="3"
           max="27"
@@ -64,7 +64,7 @@
         </label>
         <b-form-input
           id="config-fluctuation"
-          v-model="localConfig.fluctuation"
+          v-model="config.fluctuation"
           type="range"
           min="1"
           max="7"
@@ -88,7 +88,7 @@
         </label>
         <b-form-input
           id="config-holeTreshold"
-          v-model="localConfig.holeTreshold"
+          v-model="config.holeTreshold"
           type="range"
           min="0"
           max="7"
@@ -110,7 +110,7 @@
             triggers="hover"
           >Set the lowest value to turn off. The logic behing finding the right spot can be found in the generator source code.</b-tooltip>
         </label>
-        <b-form-input id="config-color" v-model="localConfig.color" type="color"></b-form-input>
+        <b-form-input id="config-color" v-model="color" type="color"></b-form-input>
       </b-col>
     </b-row>
   </div>
@@ -120,14 +120,17 @@
 import Events from "../vars/Events";
 import { Component, Prop, Watch, Vue } from "vue-property-decorator";
 import CloudPresets, { CloudPreset } from "../generator/CloudPresets";
-import CloudGenerator from "../generator/CloudGenerator";
+import CloudGenerator, {
+  CloudGeneratorConfig
+} from "../generator/CloudGenerator";
 
 @Component({
   components: {}
 })
 class Configurator extends Vue {
-  @Prop() config!: CloudPreset;
-  localConfig: CloudPreset = this.config;
+  @Prop() initPreset!: CloudPreset;
+  config: CloudGeneratorConfig = this.initPreset;
+  color: string = this.initPreset.color;
   presets: CloudPresets = CloudPresets;
   autoSync: boolean = true;
 
@@ -136,22 +139,33 @@ class Configurator extends Vue {
    * @param {CloudPreset} preset
    */
   applyPreset(preset: CloudPreset) {
-    this.localConfig = Object.assign({}, this.localConfig, preset);
+    this.config = Object.assign({}, this.config, preset);
+    this.color = preset.color;
   }
 
-  @Watch("localConfig", { immediate: true, deep: true })
-  onUpdateLocalConfig(val: CloudPreset, oldVal: CloudPreset) {
+  @Watch("config", { immediate: true, deep: true })
+  onUpdateConfig(val: CloudPreset, oldVal: CloudPreset) {
     // Range input returns strings instead of number so here we go.
     val.holeTreshold = parseInt(val.holeTreshold.toString());
+    val.width = parseInt(val.width.toString());
+    val.height = parseInt(val.height.toString());
+    val.fluctuation = parseInt(val.fluctuation.toString());
 
-    if (this.autoSync !== true) {
-      return;
-    }
-    this.onUpdateConfig();
+    if (this.autoSync !== true) return;
+    this.emitUpdateConfig();
   }
 
-  onUpdateConfig() {
-    this.$emit(Events.UpdateConfig, this.localConfig);
+  @Watch("color", { immediate: true })
+  onUpdateLocalColor(val: string, oldVal: string) {
+    this.emitUpdateColor();
+  }
+
+  emitUpdateConfig() {
+    this.$emit(Events.UpdateConfig, this.config);
+  }
+
+  emitUpdateColor() {
+    this.$emit(Events.UpdateColor, this.color);
   }
 }
 
