@@ -1,9 +1,9 @@
 # Cloud Generator
-Stylised flat cloud/fog/mist shape SVG generator with various configuration options. This repository contains all the UI stuff (Vue.js in TypeScript) and Vue-Bootrstrap based components.
+Stylised flat cloud/fog/mist shape SVG generator with various configuration options. This repository contains all the UI elements (Vue.js in TypeScript) and Vue-Bootrstrap based components.
 
 If your are only looking for the actual generator, check out the `src/generator/CloudGenerator.ts` file. Don't worry if you are not ready for TypeScript, you can transpile your own using the [Playground](http://www.typescriptlang.org/play/)).
 
-[Live demo](https://onetdev.com/projects/cloud_generator)
+[Live demo](https://cloud-svg-generator.netlify.app/)
 
 ## How it looks
 

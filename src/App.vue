@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <div id="background"></div>
     <b-container v-if="preset != null" id="main">
       <Preview :config="config" :color="color" />
       <Configurator
@@ -19,7 +18,7 @@
           <p class="lead">
             Generate your own svg cloud and use it anywhere you want for absolutely free.
             If you have any question of further request, mail me at
-            <a href="mailto:contact@onetdev.com">contact@onetdev.com</a>.
+            <a href="mailto:contact@onet.dev">contact@onet.dev</a>.
           </p>
         </b-col>
         <b-col lg="5">
@@ -36,7 +35,7 @@
     <footer class="container" id="footer">
       <b-nav pills small align="center">
         <b-nav-item disabled>Copyright &copy; 2020</b-nav-item>
-        <b-nav-item href="https://onetdev.com">József Koller</b-nav-item>
+        <b-nav-item href="https://onet.dev">József Koller</b-nav-item>
         <b-nav-item href="https://github.com/orosznyet">GitHub</b-nav-item>
       </b-nav>
     </footer>
@@ -71,16 +70,6 @@ export default App;
 </script>
 
 <style scoped>
-#background {
-  border-radius: 50%;
-  position: absolute;
-  width: 200vw;
-  height: 200vh;
-  top: -110vh;
-  left: -50vw;
-  box-shadow: 0px 15px 50px #d8d8d8;
-  z-index: 1;
-}
 #app {
   min-height: 100vh;
   min-width: 100vw;
