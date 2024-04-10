@@ -1,117 +1,97 @@
 <template>
-  <div>
-    <b-row>
-      <b-col xs="12" class="text-center">
-        <b-dropdown id="load-preset" text="Load presets" variant="warning">
-          <b-dropdown-item @click="applyPreset(presets.regular)">Regular cloud</b-dropdown-item>
-          <b-dropdown-item @click="applyPreset(presets.foggy)">Foggy</b-dropdown-item>
-        </b-dropdown>
-      </b-col>
-    </b-row>
-    <b-row id="configurator" class="pt-4 pb-3 ml-1 mr-1">
-      <!-- Height -->
-      <b-col sm="6" md="4">
-        <label for="config-height">
-          <small class="label-text">Height</small>
-        </label>
-        <b-form-input
-          id="config-height"
-          v-model="config.height"
-          type="range"
-          min="1"
-          max="11"
-          step="2"
-        ></b-form-input>
-      </b-col>
+  <v-sheet elevation="3" rounded="lg" variant="outlined" class="d-flex flex-wrap my-3 py-3">
+    <div class="v-col-12 d-flex justify-space-between align-center flex-wrap">
+      <h5 class="text-h5 d-inline">Configurator</h5>
+      <v-btn color="primary" id="load-preset" size="small" prepend-icon="mdi-shape-outline">
+        Load presets
 
-      <!-- Width -->
-      <b-col sm="6" md="4">
-        <label for="config-width">
-          <small class="label-text">Width</small>
-          <font-awesome-icon
-            :icon="['far', 'question-circle']"
-            class="info-tooltip"
-            id="width-info"
-          />
-          <b-tooltip target="width-info" triggers="hover"
-            >Width only defines the fluctuation base not the actual cloud width itself.</b-tooltip
-          >
-        </label>
-        <b-form-input
-          id="config-width"
-          v-model="config.width"
-          type="range"
-          min="3"
-          max="27"
-          step="2"
-        ></b-form-input>
-      </b-col>
+        <v-menu activator="parent">
+          <v-list>
+            <v-list-item
+              v-for="(item, index) in presets"
+              :key="index"
+              :value="index"
+              @click="() => applyPreset(item)"
+            >
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-btn>
+    </div>
+    <div class="v-col-12 v-col-md-6 v-col-lg-4">
+      <label for="config-height" class="px-2">Height</label>
+      <v-slider
+        hide-details
+        id="config-height"
+        max="11"
+        min="1"
+        show-ticks="always"
+        step="2"
+        thumb-label
+        v-model="config.height"
+      />
+    </div>
 
-      <!-- Fluctuation -->
-      <b-col sm="6" md="4">
-        <label for="config-fluctuation">
-          <small class="label-text">Fluctuation</small>
-          <font-awesome-icon
-            :icon="['far', 'question-circle']"
-            class="info-tooltip"
-            id="fluctuation-info"
-          />
-          <b-tooltip target="fluctuation-info" triggers="hover"
-            >The columns the left and right side will fluctuate vertically.</b-tooltip
-          >
-        </label>
-        <b-form-input
-          id="config-fluctuation"
-          v-model="config.fluctuation"
-          type="range"
-          min="1"
-          max="7"
-          step="2"
-        ></b-form-input>
-      </b-col>
+    <div class="v-col-12 v-col-md-6 v-col-lg-4">
+      <label for="config-width" class="px-2">Width</label>
+      <v-slider
+        hide-details
+        id="config-width"
+        max="27"
+        min="3"
+        show-ticks="always"
+        step="2"
+        thumb-label
+        v-model="config.width"
+      />
+    </div>
 
-      <!-- Hole treshold -->
-      <b-col sm="6" md="4">
-        <label for="config-holeTreshold">
-          <small class="label-text">Hole size</small>
-          <font-awesome-icon
-            :icon="['far', 'question-circle']"
-            class="info-tooltip"
-            id="holeTreshold-info"
-          />
-          <b-tooltip target="holeTreshold-info" triggers="hover"
-            >Set the lowest value to turn off. The logic behing finding the right spot can be found
-            in the generator source code.</b-tooltip
-          >
-        </label>
-        <b-form-input
-          id="config-holeTreshold"
-          v-model="config.holeTreshold"
-          type="range"
-          min="0"
-          max="7"
-          step="1"
-        ></b-form-input>
-      </b-col>
+    <div class="v-col-12 v-col-md-6 v-col-lg-4">
+      <label for="config-width" class="px-2">Randomness</label>
+      <v-slider
+        hint="Amplification strenght of randomness for the left and right sides of the cloud."
+        id="config-randomness"
+        max="7"
+        min="1"
+        persistent-hint
+        show-ticks="always"
+        step="2"
+        thumb-label
+        v-model="config.randomness"
+      />
+    </div>
 
-      <!-- Clour color -->
-      <b-col sm="6" md="4" align-v="center">
-        <label for="config-color">
-          <small class="label-text">Color</small>
-          <font-awesome-icon
-            :icon="['far', 'question-circle']"
-            class="info-tooltip"
-            id="color-info"
-          />
-          <b-tooltip target="color-info" triggers="hover"
-            >Set the lowest value to turn off. The logic behing finding the right spot can be found
-            in the generator source code.</b-tooltip
-          >
-        </label>
-        <b-form-input id="config-color" v-model="color" type="color"></b-form-input>
-      </b-col>
-    </b-row>
-  </div>
+    <div class="v-col-12 v-col-md-6 v-col-lg-4">
+      <label for="config-width" class="px-2">Hole size</label>
+      <v-slider
+        hint="Set the lowest value to turn off. The logic behing finding the right spot can be found in the generator source code."
+        id="config-hole-treshold"
+        max="7"
+        min="0"
+        persistent-hint
+        show-ticks="always"
+        step="1"
+        thumb-label
+        type="range"
+        v-model="config.holeTreshold"
+      />
+    </div>
+
+    <div class="v-col-12 v-col-md-6 v-col-lg-4">
+      <label for="config-width" class="px-2">Color</label>
+      <v-text-field
+        class="px-2"
+        density="compact"
+        hint="Set the lowest value to turn off. The logic behing finding the right spot can be found in the generator source code."
+        id="config-color"
+        persistent-hint
+        type="color"
+        v-model="color"
+        variant="plain"
+      />
+    </div>
+  </v-sheet>
 </template>
 
 <script lang="ts" setup>
@@ -130,8 +110,8 @@ const emit = defineEmits<{
 
 const config = ref<CloudGeneratorConfig>(props.initPreset)
 const color = ref<string>(props.initPreset.color)
-const presets = ref(CloudPresets)
 const autoSync = ref(true)
+const presets = ref(CloudPresets)
 
 /**
  * Applies preset data to the current config
@@ -160,25 +140,3 @@ watch(
   { immediate: false }
 )
 </script>
-
-<style scoped>
-#configurator {
-  background: #fffbe9;
-  border-radius: 5px;
-  border: 1px solid #cec189;
-  box-shadow: 10px 20px 20px rgba(144, 134, 89, 0.11);
-}
-#load-preset {
-  margin-bottom: -10px;
-}
-.label-text {
-  text-transform: uppercase;
-  color: #737059;
-}
-.info-tooltip {
-  font-size: 0.8em;
-  margin-left: 5px;
-  opacity: 0.4;
-  cursor: pointer;
-}
-</style>

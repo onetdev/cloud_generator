@@ -1,7 +1,7 @@
 export interface CloudGeneratorConfig {
   width: number;
   height: number;
-  fluctuation: number;
+  randomness: number;
   renderRadius: number;
   holeTreshold: number;
 }
@@ -148,7 +148,7 @@ export default class CloudGenerator {
     // Left side (from top to bottom)
     for (let i = 0; i < this.config.height; i++) {
       const point = {
-        x: 1 + Math.round(Math.random() * this.config.fluctuation) * (i % 2 ? 1 : -1),
+        x: 1 + Math.round(Math.random() * this.config.randomness) * (i % 2 ? 1 : -1),
         y: i
       };
 
@@ -160,7 +160,7 @@ export default class CloudGenerator {
       const point = {
         x:
           this.config.width -
-          Math.round(Math.random() * this.config.fluctuation) * (i % 2 ? 1 : -1),
+          Math.round(Math.random() * this.config.randomness) * (i % 2 ? 1 : -1),
         y: i
       };
       const left = this.outlinePoints.find(item => item.y == point.y);
@@ -203,7 +203,7 @@ export default class CloudGenerator {
       }
 
       let trialSlots = Array.from(Array(space - this.config.holeTreshold).keys());
-      trialSlots = _.shuffle(trialSlots);
+      trialSlots = trialSlots.sort(() => Math.random() - 0.5);
 
       for (const slot of trialSlots) {
         const y = line.left.y;

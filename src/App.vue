@@ -1,77 +1,70 @@
 <template>
-  <div id="app">
-    <b-container v-if="preset != null" id="main">
-      <Preview :config="config" :color="color" />
-      <Configurator
-        :init-preset="preset"
-        @:update:config="onUpdateConfig"
-        @:update:color="onUpdateColor"
-      />
-    </b-container>
-    <b-container class="pt-5">
-      <b-row>
-        <b-col lg="5" offset-lg="1">
-          <h3>
-            Get your own cloud
-            <small class="text-muted">for free</small>
-          </h3>
-          <p class="lead">
-            Generate your own svg cloud and use it anywhere you want for absolutely free. If you
-            have any question of further request, mail me at
-            <a href="mailto:info@onet.dev">contact@onet.dev</a>.
-          </p>
-        </b-col>
-        <b-col lg="5">
-          <h3>Are you a developer?</h3>
-          <p class="lead">
-            Would love to get your hands on the source code our maybe you want to contribute,
-            <a href="https://github.com/onetdev/cloud_generator">just click here</a>.
-          </p>
-        </b-col>
-      </b-row>
-    </b-container>
-    <footer class="container" id="footer">
-      <b-nav pills small align="center">
-        <b-nav-item disabled>Copyright &copy; 2020</b-nav-item>
-        <b-nav-item href="https://onet.dev">József Koller</b-nav-item>
-        <b-nav-item href="https://github.com/onetdev">GitHub</b-nav-item>
-      </b-nav>
-    </footer>
-  </div>
+  <v-layout id="layout">
+    <v-app-bar app color="default" dark>
+      <v-toolbar-title>Cloud Generator</v-toolbar-title>
+      <template v-slot:append>
+        <v-icon icon="mdi-moon-waning-crescent" :color="toggleIsDark ? 'primary' : 'secondary'" />
+        <v-switch inset v-model="toggleIsDark" hide-details class="mr-2" />
+        <v-icon icon="mdi-white-balance-sunny" :color="toggleIsDark ? 'secondary' : 'primary'" />
+      </template>
+    </v-app-bar>
+    <v-main>
+      <v-container class="d-flex flex-column justify-center" id="layout-main">
+        <ContributionCallout />
+        <GeneratorPreview :config="config" :color="color" class="mb-5" />
+        <GeneratorConfigurator
+          :init-preset="preset"
+          @update:color="onUpdateColor"
+          @update:config="onUpdateConfig"
+        />
+      </v-container>
+
+      <AppFooter />
+    </v-main>
+  </v-layout>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { type CloudGeneratorConfig } from './generator/CloudGenerator'
 import CloudPresets, { type CloudPreset } from './generator/CloudPresets'
-import Configurator from './components/GeneratorConfigurator.vue'
-import Preview from './components/GeneratorPreview.vue'
+import GeneratorConfigurator from './components/GeneratorConfigurator.vue'
+import GeneratorPreview from './components/GeneratorPreview.vue'
+import AppFooter from './components/AppFooter.vue'
+import ContributionCallout from './components/ContributionCallout.vue'
+import { useTheme } from 'vuetify'
 
-const preset = ref<CloudPreset>(CloudPresets.regular)
+const theme = useTheme()
+
+const preset = ref<CloudPreset>(CloudPresets.find((item) => item.id === 'regular')!)
 const config = ref<CloudGeneratorConfig>(preset.value)
 const color = ref<string>(preset.value.color)
+const toggleIsDark = ref(theme.global.current.value.dark)
 
-const onUpdateConfig = ($event: CloudGeneratorConfig) => {
-  config.value = $event
+const onUpdateConfig = (payload: CloudGeneratorConfig) => {
+  if (!payload) {
+    return
+  }
+  config.value = { ...payload }
 }
 
-const onUpdateColor = ($event: string) => {
-  color.value = $event
+const onUpdateColor = (payload: string) => {
+  if (!payload) {
+    return
+  }
+  color.value = payload
 }
+
+watch(
+  () => toggleIsDark.value,
+  () => {
+    theme.global.name.value = toggleIsDark.value ? 'dark' : 'light'
+  }
+)
 </script>
 
 <style scoped>
-#app {
-  min-height: 100vh;
-  min-width: 100vw;
-}
-#main {
-  z-index: 2;
-  position: relative;
-}
-#footer {
-  padding-top: 4em;
-  padding-bottom: 2em;
-  z-index: 1;
+#layout-main {
+  min-height: calc(100vh - 120px);
 }
 </style>

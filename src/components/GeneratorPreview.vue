@@ -1,56 +1,61 @@
 <template>
-  <div>
-    <b-row id="preview" class="mt-5 mb-5 mx-auto">
-      <svg
-        width="400"
-        height="400"
-        :viewBox="`0 0 ${boundingWidth} ${boundingHeight}`"
-        xmlns="http://www.w3.org/2000/svg"
-        class="mx-auto"
-        id="image"
+  <v-card id="preview" rounded="lg" variant="outlined" elevation="4" color="secondary">
+    <v-card-title>Live preview</v-card-title>
+    <v-card-text>
+      <v-row justify="center">
+        <svg
+          width="400"
+          height="400"
+          :viewBox="`0 0 ${boundingWidth} ${boundingHeight}`"
+          xmlns="http://www.w3.org/2000/svg"
+          class="mx-auto"
+          id="image"
+        >
+          <g v-if="boundingBox" :transform="`translate(${boundingBox.a.x * -1}, 0)`">
+            <path id="path" :d="svgPath" :fill="color" stroke="none" stroke-width="0" />
+          </g>
+        </svg>
+      </v-row>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn
+        :disabled="history.length <= 0"
+        @click="historyBack"
+        id="history"
+        prepend-icon="mdi-history"
+        size="small"
+        tooltip="Revert last generation"
+        variant="outlined"
       >
-        <g v-if="boundingBox" :transform="`translate(${boundingBox.a.x * -1}, 0)`">
-          <path id="path" :d="svgPath" :fill="color" stroke="none" stroke-width="0" />
-        </g>
-      </svg>
-      <div class="actions">
-        <b-button
-          v-if="history.length > 0"
-          id="history"
-          variant="warning"
-          class="mr-2 mb-2 px-4"
-          @click="historyBack"
-          tooltip="Revert last generation"
-        >
-          <font-awesome-icon icon="history" />
-        </b-button>
-
-        <b-button
-          id="download"
-          variant="info"
-          class="mr-2 mb-2 px-4"
-          @click="download"
-          title="Download"
-        >
-          <font-awesome-icon icon="cloud-download-alt" />
-        </b-button>
-
-        <b-button
-          id="generate"
-          variant="danger"
-          class="mr-2 mb-2 px-4"
-          @click="generate"
-          title="Generate new"
-        >
-          <font-awesome-icon icon="dice" />
-        </b-button>
-      </div>
-    </b-row>
-  </div>
+        Revert
+      </v-btn>
+      <v-btn
+        @click="download"
+        color="info"
+        id="download"
+        prepend-icon="mdi-cloud-download"
+        size="small"
+        variant="outlined"
+      >
+        Download
+      </v-btn>
+      <v-btn
+        @click="generate"
+        color="success"
+        id="generate"
+        prepend-icon="mdi-dice-5-outline"
+        size="small"
+        title="Generate next"
+        variant="flat"
+      >
+        Next
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import CloudGenerator, {
   type BoundingBox,
   RenderMapper,
@@ -97,8 +102,6 @@ const historyBack = () => {
 const download = () => {
   if (!boundingBox.value) return
 
-  console.log(boundingBox.value, boundingWidth.value, boundingHeight.value)
-
   const content = `<?xml version="1.0" encoding="utf-8"?>
       <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
       <svg
@@ -136,27 +139,3 @@ watch(
   { immediate: true }
 )
 </script>
-
-<style scoped lang="scss">
-#preview {
-  position: relative;
-  border: 1px solid #dcdcdc;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 5px 5px 10px rgba(223, 223, 223, 0.58);
-  max-width: 600px;
-}
-.actions {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-}
-#download,
-#generate {
-  opacity: 0.8;
-  transition: ease 200ms opacity;
-  &:hover {
-    opacity: 0.8;
-  }
-}
-</style>
