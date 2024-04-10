@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export interface CloudGeneratorConfig {
   width: number;
   height: number;
@@ -207,7 +205,7 @@ export default class CloudGenerator {
       let trialSlots = Array.from(Array(space - this.config.holeTreshold).keys());
       trialSlots = _.shuffle(trialSlots);
 
-      for (let slot of trialSlots) {
+      for (const slot of trialSlots) {
         const y = line.left.y;
         const xLeft = line.left.x + slot;
         const xRight = xLeft + this.config.holeTreshold;
@@ -251,7 +249,7 @@ export default class CloudGenerator {
    * @return {array}
    */
   getOutlinePath(): string[] {
-    let path = [];
+    const path = [];
     path.push(this.mapper.pathPenDown(this.center, -0.5));
 
     for (let i = 0; i < this.outlinePoints.length; i++) {
@@ -316,9 +314,9 @@ export default class CloudGenerator {
    * hole treshold value. Holes will be at least one row away from eachother.
    */
   getHolePaths(): string[] {
-    let path = [];
+    const path = [];
 
-    for (let hole of this.holes) {
+    for (const hole of this.holes) {
       if (this.config.holeTreshold == 1) {
         path.push(this.mapper.pathCircle(hole.x1, hole.y));
       } else {

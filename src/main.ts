@@ -1,27 +1,19 @@
-import Vue from "vue";
-import BootstrapVue from "bootstrap-vue";
-import App from "./App.vue";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faSync,
-  faDice,
-  faCloudDownloadAlt,
-  faHistory
-} from "@fortawesome/free-solid-svg-icons";
-import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import "./app.scss";
+import { createApp } from 'vue'
+import App from './App.vue'
 
-Vue.config.productionTip = false;
-Vue.use(BootstrapVue);
+// Vuetify
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
-library.add(faQuestionCircle);
-library.add(faSync);
-library.add(faDice);
-library.add(faCloudDownloadAlt);
-library.add(faHistory);
-Vue.component("font-awesome-icon", FontAwesomeIcon);
+const app = createApp(App)
 
-new Vue({
-  render: h => h(App)
-}).$mount("#app");
+const vuetify = createVuetify({
+  components,
+  directives,
+})
+
+app.use(vuetify);
+
+app.mount('#app')

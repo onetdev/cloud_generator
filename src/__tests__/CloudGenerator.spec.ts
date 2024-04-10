@@ -1,4 +1,4 @@
-import CloudGenerator, { CloudGeneratorConfig } from "@/generator/CloudGenerator";
+import CloudGenerator, { CloudGeneratorConfig } from "OLD/src/generator/CloudGenerator";
 
 describe('CloudGenerator', () => {
   let config: CloudGeneratorConfig;

@@ -3,7 +3,7 @@ import BootstrapVue from "bootstrap-vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Configurator from "@/components/Configurator.vue";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-import Events from "@/vars/Events";
+import Events from "OLD/src/vars/Events";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 describe('Components/Configurator.vue', () => {

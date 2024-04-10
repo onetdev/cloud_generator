@@ -4,8 +4,8 @@
       <Preview :config="config" :color="color" />
       <Configurator
         :init-preset="preset"
-        v-on:update:config="onUpdateConfig($event)"
-        v-on:update:color="onUpdateColor($event)"
+        @:update:config="onUpdateConfig"
+        @:update:color="onUpdateColor"
       />
     </b-container>
     <b-container class="pt-5">
@@ -16,18 +16,16 @@
             <small class="text-muted">for free</small>
           </h3>
           <p class="lead">
-            Generate your own svg cloud and use it anywhere you want for absolutely free.
-            If you have any question of further request, mail me at
-            <a href="mailto:contact@onet.dev">contact@onet.dev</a>.
+            Generate your own svg cloud and use it anywhere you want for absolutely free. If you
+            have any question of further request, mail me at
+            <a href="mailto:info@onet.dev">contact@onet.dev</a>.
           </p>
         </b-col>
         <b-col lg="5">
-          <h3>
-            Are you a developer?
-          </h3>
+          <h3>Are you a developer?</h3>
           <p class="lead">
             Would love to get your hands on the source code our maybe you want to contribute,
-            <a href="https://github.com/orosznyet/cloud_generator">just click here</a>.
+            <a href="https://github.com/onetdev/cloud_generator">just click here</a>.
           </p>
         </b-col>
       </b-row>
@@ -36,37 +34,30 @@
       <b-nav pills small align="center">
         <b-nav-item disabled>Copyright &copy; 2020</b-nav-item>
         <b-nav-item href="https://onet.dev">József Koller</b-nav-item>
-        <b-nav-item href="https://github.com/orosznyet">GitHub</b-nav-item>
+        <b-nav-item href="https://github.com/onetdev">GitHub</b-nav-item>
       </b-nav>
     </footer>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { CloudGeneratorConfig } from "./generator/CloudGenerator";
-import CloudPresets, { CloudPreset } from "./generator/CloudPresets";
-import Configurator from "./components/Configurator.vue";
-import Preview from "./components/Preview.vue";
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { type CloudGeneratorConfig } from './generator/CloudGenerator'
+import CloudPresets, { type CloudPreset } from './generator/CloudPresets'
+import Configurator from './components/GeneratorConfigurator.vue'
+import Preview from './components/GeneratorPreview.vue'
 
-@Component({
-  components: { Preview, Configurator }
-})
-class App extends Vue {
-  preset: CloudPreset = CloudPresets.regular;
-  config: CloudGeneratorConfig = this.preset;
-  color: string = this.preset.color;
+const preset = ref<CloudPreset>(CloudPresets.regular)
+const config = ref<CloudGeneratorConfig>(preset.value)
+const color = ref<string>(preset.value.color)
 
-  onUpdateConfig($event: CloudGeneratorConfig) {
-    this.config = $event;
-  }
-
-  onUpdateColor($event: string) {
-    this.color = $event;
-  }
+const onUpdateConfig = ($event: CloudGeneratorConfig) => {
+  config.value = $event
 }
 
-export default App;
+const onUpdateColor = ($event: string) => {
+  color.value = $event
+}
 </script>
 
 <style scoped>

@@ -33,10 +33,9 @@
             class="info-tooltip"
             id="width-info"
           />
-          <b-tooltip
-            target="width-info"
-            triggers="hover"
-          >Width only defines the fluctuation base not the actual cloud width itself.</b-tooltip>
+          <b-tooltip target="width-info" triggers="hover"
+            >Width only defines the fluctuation base not the actual cloud width itself.</b-tooltip
+          >
         </label>
         <b-form-input
           id="config-width"
@@ -57,10 +56,9 @@
             class="info-tooltip"
             id="fluctuation-info"
           />
-          <b-tooltip
-            target="fluctuation-info"
-            triggers="hover"
-          >The columns the left and right side will fluctuate vertically.</b-tooltip>
+          <b-tooltip target="fluctuation-info" triggers="hover"
+            >The columns the left and right side will fluctuate vertically.</b-tooltip
+          >
         </label>
         <b-form-input
           id="config-fluctuation"
@@ -81,10 +79,10 @@
             class="info-tooltip"
             id="holeTreshold-info"
           />
-          <b-tooltip
-            target="holeTreshold-info"
-            triggers="hover"
-          >Set the lowest value to turn off. The logic behing finding the right spot can be found in the generator source code.</b-tooltip>
+          <b-tooltip target="holeTreshold-info" triggers="hover"
+            >Set the lowest value to turn off. The logic behing finding the right spot can be found
+            in the generator source code.</b-tooltip
+          >
         </label>
         <b-form-input
           id="config-holeTreshold"
@@ -105,10 +103,10 @@
             class="info-tooltip"
             id="color-info"
           />
-          <b-tooltip
-            target="color-info"
-            triggers="hover"
-          >Set the lowest value to turn off. The logic behing finding the right spot can be found in the generator source code.</b-tooltip>
+          <b-tooltip target="color-info" triggers="hover"
+            >Set the lowest value to turn off. The logic behing finding the right spot can be found
+            in the generator source code.</b-tooltip
+          >
         </label>
         <b-form-input id="config-color" v-model="color" type="color"></b-form-input>
       </b-col>
@@ -116,60 +114,51 @@
   </div>
 </template>
 
-<script lang="ts">
-import Events from "../vars/Events";
-import { Component, Prop, Watch, Vue } from "vue-property-decorator";
-import CloudPresets, { CloudPreset } from "../generator/CloudPresets";
-import CloudGenerator, {
-  CloudGeneratorConfig
-} from "../generator/CloudGenerator";
+<script lang="ts" setup>
+import { ref, watch } from 'vue'
+import Events from '../Events'
+import CloudPresets, { type CloudPreset } from '../generator/CloudPresets'
+import type { CloudGeneratorConfig } from '../generator/CloudGenerator'
 
-@Component({
-  components: {}
-})
-class Configurator extends Vue {
-  @Prop() initPreset!: CloudPreset;
-  config: CloudGeneratorConfig = this.initPreset;
-  color: string = this.initPreset.color;
-  presets: CloudPresets = CloudPresets;
-  autoSync: boolean = true;
+const props = defineProps<{
+  initPreset: CloudPreset
+}>()
+const emit = defineEmits<{
+  (e: Events.UpdateConfig, config: CloudGeneratorConfig): void
+  (e: Events.UpdateColor, value: string): void
+}>()
 
-  /**
-   * Applies preset data to the current config
-   * @param {CloudPreset} preset
-   */
-  applyPreset(preset: CloudPreset) {
-    this.config = Object.assign({}, this.config, preset);
-    this.color = preset.color;
-  }
+const config = ref<CloudGeneratorConfig>(props.initPreset)
+const color = ref<string>(props.initPreset.color)
+const presets = ref(CloudPresets)
+const autoSync = ref(true)
 
-  @Watch("config", { immediate: false, deep: true })
-  onUpdateConfig(val: CloudPreset, oldVal: CloudPreset) {
-    // Range input returns strings instead of number so here we go.
-    val.holeTreshold = parseInt(val.holeTreshold.toString());
-    val.width = parseInt(val.width.toString());
-    val.height = parseInt(val.height.toString());
-    val.fluctuation = parseInt(val.fluctuation.toString());
-
-    if (this.autoSync !== true) return;
-    this.emitUpdateConfig();
-  }
-
-  @Watch("color", { immediate: false })
-  onUpdateLocalColor(val: string, oldVal: string) {
-    this.emitUpdateColor();
-  }
-
-  emitUpdateConfig() {
-    this.$emit(Events.UpdateConfig, this.config);
-  }
-
-  emitUpdateColor() {
-    this.$emit(Events.UpdateColor, this.color);
-  }
+/**
+ * Applies preset data to the current config
+ * @param {CloudPreset} preset
+ */
+const applyPreset = (preset: CloudPreset) => {
+  config.value = Object.assign({}, config.value, preset)
+  color.value = preset.color
 }
 
-export default Configurator;
+watch(
+  () => config.value,
+  () => {
+    if (autoSync.value !== true) return
+    emit(Events.UpdateConfig, config.value)
+  },
+  { deep: true, immediate: false }
+)
+
+watch(
+  () => color.value,
+  () => {
+    if (autoSync.value !== true) return
+    emit(Events.UpdateColor, color.value)
+  },
+  { immediate: false }
+)
 </script>
 
 <style scoped>

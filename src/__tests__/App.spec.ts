@@ -2,7 +2,7 @@ import App from '@/App.vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import BootstrapVue from "bootstrap-vue";
 import Configurator from "@/components/Configurator.vue";
-import Events from "@/vars/Events";
+import Events from "OLD/src/vars/Events";
 
 describe('App.vue', () => {
   const localVue = createLocalVue();
