@@ -133,12 +133,11 @@ watch(
 
 watch(
   () => color.value,
-  (data, oldData) => {
+  () => {
     if (autoSync.value !== true) {
       return
     }
 
-    console.log('IN WATCH', data, oldData)
     emit(Events.UpdateColor, color.value)
   },
   { deep: false, immediate: false }

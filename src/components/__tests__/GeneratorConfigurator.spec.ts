@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import GeneratorConfigurator from '../GeneratorConfigurator.vue';
-import { getVuetifyTestPlugin } from '@/test_utils';
+import { getVuetifyTestPlugin } from '@/../test_utils';
 
 describe('components/GeneratorConfigurator.vue', () => {
   const getProps = () => ({
