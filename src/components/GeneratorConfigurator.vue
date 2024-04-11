@@ -79,7 +79,7 @@
     </div>
 
     <div class="v-col-12 v-col-md-6 v-col-lg-4">
-      <label for="config-width" class="px-2">Color</label>
+      <label for="config-color" class="px-2">Color</label>
       <v-text-field
         class="px-2"
         density="compact"
@@ -133,10 +133,14 @@ watch(
 
 watch(
   () => color.value,
-  () => {
-    if (autoSync.value !== true) return
+  (data, oldData) => {
+    if (autoSync.value !== true) {
+      return
+    }
+
+    console.log('IN WATCH', data, oldData)
     emit(Events.UpdateColor, color.value)
   },
-  { immediate: false }
+  { deep: false, immediate: false }
 )
 </script>

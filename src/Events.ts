@@ -1,6 +1,6 @@
 enum Events {
-  UpdateConfig = "update:config",
-  UpdateColor = "update:color",
+  UpdateConfig = "updateConfig",
+  UpdateColor = "updateColor",
 }
 
 export default Events;

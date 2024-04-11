@@ -127,7 +127,7 @@ export default class CloudGenerator {
   constructor(config: CloudGeneratorConfig) {
     // Assertion
     if (config.width % 2 == 0) {
-      throw new Error(`Only odd width is allowed.`);
+      throw new Error(`Only odd width is allowed. Value was ${config.width} instead.`);
     }
     if (config.height % 2 == 0) {
       throw new Error(`Only odd height is allowed.`);

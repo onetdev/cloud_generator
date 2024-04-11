@@ -14,8 +14,8 @@
         <GeneratorPreview :config="config" :color="color" class="mb-5" />
         <GeneratorConfigurator
           :init-preset="preset"
-          @update:color="onUpdateColor"
-          @update:config="onUpdateConfig"
+          @updateColor="onUpdateColor"
+          @updateConfig="onUpdateConfig"
         />
       </v-container>
 
