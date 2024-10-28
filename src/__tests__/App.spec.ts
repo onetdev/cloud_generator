@@ -2,7 +2,7 @@ import App from '@/App.vue';
 import { describe, it, expect } from 'vitest'
 import { shallowMount } from '@vue/test-utils';
 import Events from '@/Events';
-import { getVuetifyTestPlugin } from '@/../test_utils';
+import { getVuetifyTestPlugin } from '@/test_utils';
 
 describe('App.vue', () => {
   it('should handle config update', () => {
