@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import GeneratorPreview from '../GeneratorPreview.vue'
 import { nextTick } from 'vue'
-import { getVuetifyTestPlugin } from '@/../test_utils'
+import { getVuetifyTestPlugin } from '@/test_utils'
 
 describe('components/GeneratorPreview.vue', () => {
   const getTestProps = () => ({
